@@ -6,20 +6,22 @@ import java.io.*;
 import java.net.Socket;
 
 public class FileUploadClient extends JFrame {
-    private static final String SERVER_IP = "10.0.0.12"; //73 106 183 226
     private static final int SERVER_PORT = 443;
 
     private JTextField fileTextField;
+    private JTextField ipTextField;
     private JButton uploadButton;
 
     public FileUploadClient() {
         setTitle("File Upload Client");
-        setSize(400, 150);
+        setSize(400, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setLayout(new GridLayout(3, 1));
 
         fileTextField = new JTextField();
+        ipTextField = new JTextField();
         uploadButton = new JButton("Upload");
+
         uploadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -27,25 +29,40 @@ public class FileUploadClient extends JFrame {
             }
         });
 
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(fileTextField, BorderLayout.CENTER);
-        panel.add(uploadButton, BorderLayout.EAST);
+        JPanel ipPanel = new JPanel(new BorderLayout());
+        ipPanel.add(new JLabel("IP Address: "), BorderLayout.WEST);
+        ipPanel.add(ipTextField, BorderLayout.CENTER);
 
-        add(panel, BorderLayout.CENTER);
+        JPanel filePanel = new JPanel(new BorderLayout());
+        filePanel.add(new JLabel("File Path: "), BorderLayout.WEST);
+        filePanel.add(fileTextField, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel(new BorderLayout());
+        buttonPanel.add(uploadButton, BorderLayout.CENTER);
+
+        add(ipPanel);
+        add(filePanel);
+        add(buttonPanel);
     }
 
     private void uploadFile() {
         String filePath = fileTextField.getText().trim();
+        String serverIp = ipTextField.getText().trim();
 
         if (filePath.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter the file path.");
             return;
         }
 
+        if (serverIp.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter the IP Address.");
+            return;
+        }
+
         DataOutputStream dos = null;
 
         try {
-            Socket socket = new Socket(SERVER_IP, SERVER_PORT);
+            Socket socket = new Socket(serverIp, SERVER_PORT);
             System.out.println("Connected to server");
 
             File file = new File(filePath);
@@ -88,4 +105,3 @@ public class FileUploadClient extends JFrame {
         });
     }
 }
-
