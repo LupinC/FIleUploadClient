@@ -3,10 +3,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 
 public class FileUploadClient extends JFrame {
-    private static final int SERVER_PORT = 443;
+    private static final int SERVER_PORT = 9999;
 
     private JTextField fileTextField;
     private JTextField ipTextField;
@@ -63,7 +64,7 @@ public class FileUploadClient extends JFrame {
 
         try {
             Socket socket = new Socket(serverIp, SERVER_PORT);
-            System.out.println("Connected to server");
+            JOptionPane.showMessageDialog(this,"Connected to server");
 
             File file = new File(filePath);
             FileInputStream fis = new FileInputStream(file);
@@ -85,9 +86,13 @@ public class FileUploadClient extends JFrame {
             socket.close();
 
             JOptionPane.showMessageDialog(this, "File uploaded successfully");
-        } catch (IOException e) {
+        } catch (FileNotFoundException e){
+            JOptionPane.showMessageDialog(this, "File not found");
+        } catch (ConnectException e) {
+            JOptionPane.showMessageDialog(this, "Server is not on or time out");
+        } catch (IOException e){
             e.printStackTrace();
-        } finally {
+        }finally {
             if (dos != null) {
                 try {
                     dos.close();
